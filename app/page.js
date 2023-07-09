@@ -96,7 +96,7 @@ export default function Home() {
           <div className="flex">
             <input
               type="text"
-              placeholder="Enter a product name"
+              placeholder="Enter Product Name"
               value={searchTerm}
               onChange={handleSearchTermChange}
               className="p-2 border border-gray-400 mr-2"
@@ -110,7 +110,7 @@ export default function Home() {
           </div>
 
           {searchResults.length > 0 && searchModal && (
-            <div className="mt-4 absolute bg-white w-full">
+            <div className="mt-4 absolute bg-white w-full border">
               <h3 className="bg-green-500 p-4 text-white">Search Results:</h3>
               <ul>
                 {searchResults.map((product) => (
