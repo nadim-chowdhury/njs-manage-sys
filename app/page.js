@@ -1,19 +1,16 @@
 "use client";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import axios from "axios";
 
 export default function Home() {
   const [productName, setProductName] = useState("");
-  const [quantity, setQuantity] = useState(""); // Initialize with an empty string
+  const [quantity, setQuantity] = useState("");
   const [price, setPrice] = useState("");
-  const [stock, setStock] = useState([
-    { id: 1, name: "Product 1", quantity: 1, price: 24 },
-    { id: 2, name: "Product 2", quantity: 5, price: 48 },
-    { id: 3, name: "Product 3", quantity: 8, price: 62 },
-  ]);
+  const [stock, setStock] = useState([]);
   const [searchTerm, setSearchTerm] = useState("");
   const [searchResults, setSearchResults] = useState([]);
   const [searchModal, setSearchModal] = useState(false);
+  const [alert, setAlert] = useState("");
 
   const handleProductNameChange = (event) => {
     setProductName(event.target.value);
@@ -38,14 +35,13 @@ export default function Home() {
         price: parseFloat(price),
       };
 
-      const response = await axios.post("/api/product", newProduct);
+      await axios.post("/api/product", newProduct);
+      console.log(newProduct);
 
-      const { id, name, quantity, price } = response.data;
-
-      setStock([...stock, { id, name, quantity, price }]);
       setProductName("");
       setQuantity("");
       setPrice("");
+      setAlert("Your product has been added");
     } catch (error) {
       console.error("Error adding product:", error);
     }
@@ -61,8 +57,14 @@ export default function Home() {
     );
 
     setSearchResults(filteredResults);
-    setSearchModal(searchTerm !== "");
+    setSearchModal(!searchModal);
   };
+
+  useEffect(() => {
+    axios
+      .get("http://localhost:3000/api/product")
+      .then((res) => setStock(res.data.allProducts));
+  }, []);
 
   return (
     <div className="container mx-auto">
@@ -99,6 +101,8 @@ export default function Home() {
               Add
             </button>
           </div>
+
+          <p className="text-green-500 mt-2">{alert}</p>
         </div>
 
         <div className="relative">
@@ -116,7 +120,7 @@ export default function Home() {
               onClick={handleSearch}
               className="p-2 bg-green-500 text-white"
             >
-              Search
+              {searchModal ? "Close" : "Search"}
             </button>
           </div>
 
