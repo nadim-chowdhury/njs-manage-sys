@@ -62,7 +62,7 @@ export default function Home() {
 
   useEffect(() => {
     axios
-      .get("http://localhost:3000/api/product")
+      .get("https://njs-manage-sys.vercel.app/api/product")
       .then((res) => setStock(res.data.allProducts));
   }, []);
 
@@ -96,7 +96,7 @@ export default function Home() {
             />
             <button
               onClick={handleAddProduct}
-              className="p-2 bg-green-500 text-white"
+              className="py-2 px-4 bg-green-500 text-white"
             >
               Add
             </button>
@@ -118,7 +118,7 @@ export default function Home() {
             />
             <button
               onClick={handleSearch}
-              className="p-2 bg-green-500 text-white"
+              className="p-2 bg-green-500 text-white w-[70px]"
             >
               {searchModal ? "Close" : "Search"}
             </button>
