@@ -1,9 +1,10 @@
 "use client";
 import { useState } from "react";
+import axios from "axios";
 
 export default function Home() {
   const [productName, setProductName] = useState("");
-  const [quantity, setQuantity] = useState("");
+  const [quantity, setQuantity] = useState(""); // Initialize with an empty string
   const [price, setPrice] = useState("");
   const [stock, setStock] = useState([
     { id: 1, name: "Product 1", quantity: 1, price: 24 },
@@ -19,25 +20,35 @@ export default function Home() {
   };
 
   const handleQuantityChange = (event) => {
-    setQuantity(Number(event.target.value));
+    setQuantity(event.target.value);
   };
 
   const handlePriceChange = (event) => {
-    setPrice(Number(event.target.value));
+    setPrice(event.target.value);
   };
 
-  const handleAddProduct = () => {
-    const newProduct = {
-      id: stock.length + 1,
-      name: productName,
-      quantity: quantity,
-      price: price,
-    };
+  const handleAddProduct = async (e) => {
+    e.preventDefault();
 
-    setStock([...stock, newProduct]);
-    setProductName("");
-    setQuantity("");
-    setPrice("");
+    try {
+      const newProduct = {
+        id: stock.length + 1,
+        name: productName,
+        quantity: parseInt(quantity),
+        price: parseFloat(price),
+      };
+
+      const response = await axios.post("/api/product", newProduct);
+
+      const { id, name, quantity, price } = response.data;
+
+      setStock([...stock, { id, name, quantity, price }]);
+      setProductName("");
+      setQuantity("");
+      setPrice("");
+    } catch (error) {
+      console.error("Error adding product:", error);
+    }
   };
 
   const handleSearchTermChange = (event) => {
@@ -49,8 +60,8 @@ export default function Home() {
       product.name.toLowerCase().includes(searchTerm.toLowerCase())
     );
 
-    searchTerm ? setSearchResults(filteredResults) : "";
-    searchTerm && setSearchModal(!searchModal);
+    setSearchResults(filteredResults);
+    setSearchModal(searchTerm !== "");
   };
 
   return (
